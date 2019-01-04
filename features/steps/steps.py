@@ -14,16 +14,13 @@
 def step_impl(context):
     pass
 
-
 @when(u'an account {account_id} is credited with {amount}')
 def step_impl(context, account_id, amount):
-    context.events.publish({
+    context.events_in.publish({
         'accountId': account_id,
         'amount': amount
     })
 
-
-@then(u'a account 1234 should have a balance of 10')
-def step_impl(context):
-    raise NotImplementedError(
-        u'STEP: Then a account 1234 should have a balance of 10')
+@then(u'a account {account_id} should have a balance of {balance}')
+def step_impl(context, account_id, balance):
+    assert context.events_out.last_event() == {'accountId': account_id, 'balance': balance}
