@@ -7,11 +7,13 @@ verify_ssl = true
 pytest = "*"
 pylint = "*"
 behave = "*"
+pytest-rabbitmq = "*"
+requests-mock = "*"
+autopep8 = "*"
 
 [packages]
 pika= "*"
-pytest-rabbitmq = "*"
-mock = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

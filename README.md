@@ -23,7 +23,4 @@ pipenv run python -m pytest
 
 ### To run the service
 
-```
-FLASK_APP=customer_service pipenv run flask run
-./bin/run_docker.sh
-```
+

@@ -1,28 +1,27 @@
-# @when(u'I fetch customer {id}')
+import json
 
-# def step_impl(context, id):
-#     response = context.web_client.get('/customers/{0}'.format(id))
-#     context.response = response.get_json()
+@given(u'an account {account_number} has balance {amount}')
+def step_impl(context, account_number, amount):
+    context.accounts.add(account_number)
 
-# @then(u'I should see customer "{expected_name}"')
-# def step_impl(context, expected_name):
-#     full_name = context.response['firstName'] + " " + context.response['surname']
-#     assert full_name == expected_name
+@given(u'there is not account with the number {account_number}')
+def step_impl(context, account_number):
+    pass # Intentional no-op
 
-@given(u'an account {account_id} has balance {amount}')
-def step_impl(context, account_id, amount):
-    pass
-
-@when(u'an account {account_id} is credited with {amount}')
-def step_impl(context, account_id, amount):
+@when(u'an account {account_number} is credited with {amount}')
+def step_impl(context, account_number, amount):
     context.events_in.publish({
-        'accountId': account_id,
+        'accountId': account_number,
         'amount': amount
     })
 
-@then(u'a account {account_id} should have a balance of {balance:d}')
-def step_impl(context, account_id, balance):
-    published_event = context.events_out.last_event
-    expected_event  = {'accountId': account_id, 'balance': balance}
-
+@then(u'a account {account_number} should have a balance of {balance:d}')
+def step_impl(context, account_number, balance):
+    published_event = json.loads(context.events_out.last_event)
+    expected_event  = {'accountId': account_number, 'balance': balance}
     assert published_event == expected_event, f'{repr(published_event)} != {repr(expected_event)}'
+
+@then(u'a bad transaction should be reported')
+def step_impl(context):
+    published_event = context.events_out.last_event
+    assert published_event is None
