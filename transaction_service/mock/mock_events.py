@@ -1,9 +1,12 @@
 class MockEvents:
+	def __init__(self):
+		self.last_event = None
+		self.action = None
+
 	def publish(self, event):
-		pass
+		self.last_event = event
+		if self.action is not None:
+			self.action(event)
 
 	def on_event(self, action):
-		pass
-
-	def last_message(self):
-		pass
+		self.action = action
