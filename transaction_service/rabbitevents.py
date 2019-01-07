@@ -1,5 +1,5 @@
 from pika import ConnectionParameters, BlockingConnection
-
+from transaction_service.utils import transpose_event
 
 class RabbitConnection:
     def __init__(self, properties):
@@ -27,8 +27,9 @@ class RabbitProducer(RabbitConnection):
 
 class RabbitConsumer(RabbitConnection):
     def on_event(self, action):
-        def callback(*args):
-            action(args)
+        def callback(ch, method, properties, body):
+            payload = transpose_event(body)
+            action(payload)
 
         self.channel.basic_consume(queue=self.queue,
                                    consumer_callback=callback,

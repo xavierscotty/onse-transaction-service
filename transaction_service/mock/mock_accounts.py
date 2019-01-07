@@ -1,9 +1,9 @@
 class MockAccounts:
     def __init__(self):
-        self._accounts = set()
+        self._accounts = dict()
 
-    def add(self, account_number):
-        self._accounts.add(account_number)
+    def add(self, account):
+        self._accounts[account['accountNumber']] = account
 
-    def has_account_with_number(self, account_number):
-        return account_number in self._accounts
+    def has_active_account(self, account):
+        return account in self._accounts

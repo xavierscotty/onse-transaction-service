@@ -3,5 +3,5 @@
 pipenv shell;
 # docker run -d -p 5672:5672 rabbitmq
 python -m pytest;
-# behave;
+behave;
 # docker stop

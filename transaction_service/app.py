@@ -1,6 +1,5 @@
 import json
 
-
 class Application:
     def __init__(self, consumer, producer, accounts):
         self.consumer = consumer
@@ -12,15 +11,13 @@ class Application:
 
     def handle_event(self, event):
         print('handling event')
-
-        print(type(event))
-
-        account_number = '123123'
-        account_exists = self.accounts.has_account_with_number(account_number)
+        account_exists = self.accounts.has_active_account(event['accountNumber'])
 
         if not account_exists:
             print("Invalid account")
             return
 
+        print(event)
+
         self.producer.publish(json.dumps(
-            {'accountId': account_number, 'balance': 10}))
+            {'accountNumber': event['accountNumber'], 'balance': 10}))

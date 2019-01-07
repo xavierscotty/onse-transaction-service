@@ -1,9 +1,6 @@
 
 import json
 
-# def transpose_event(event):
-#     if type(event) is dict():
-#         return event
-#     elif type(event)
-#     else:
-#         raise TypeError(type(event))
+def transpose_event(event):
+    body = bytes(event).decode()
+    return json.loads(body)
