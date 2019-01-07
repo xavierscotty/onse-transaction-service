@@ -7,4 +7,3 @@ class MockAccounts:
 
     def has_account_with_number(self, account_number):
         return account_number in self._accounts
-
