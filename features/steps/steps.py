@@ -17,7 +17,7 @@ def step_impl(context, account_number):
 
 @when(u'an account {account_number} is credited with {amount}')
 def step_impl(context, account_number, amount):
-    context.events_in.publish({
+    context.events_in.produce({
         'accountNumber': account_number,
         'amount': amount
     })

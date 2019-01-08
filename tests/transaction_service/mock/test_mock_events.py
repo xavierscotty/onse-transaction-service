@@ -15,7 +15,7 @@ def test_no_events_published(broker):
 
 def test_last_event_on_publish(broker):
     event = "Hello Event!!"
-    broker.publish(event)
+    broker.produce(event)
     assert broker.last_event is event
 
 
@@ -23,5 +23,5 @@ def test_action_on_publish(broker):
     event = "Other event"
     action = Mock()
     broker.on_event(action)
-    broker.publish(event)
+    broker.produce(event)
     action.assert_called_with(event)

@@ -3,7 +3,7 @@ class MockEvents:
         self.last_event = None
         self.action = None
 
-    def publish(self, event):
+    def produce(self, event):
         self.last_event = event
         if self.action is not None:
             self.action(event)

@@ -9,4 +9,4 @@ properties = {
 }
 producer = RabbitProducer(properties)
 
-producer.publish(sys.argv[1])
+producer.produce(sys.argv[1])

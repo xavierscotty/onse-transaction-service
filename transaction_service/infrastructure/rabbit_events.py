@@ -21,7 +21,7 @@ class RabbitProducer(RabbitConnection):
         self.channel.exchange_declare(self.exchange, exchange_type='topic')
         self.channel.queue_bind(queue=self.queue, exchange=self.exchange)
 
-    def publish(self, event):
+    def produce(self, event):
         self.channel.basic_publish(exchange=self.exchange,
                                    routing_key=self.queue,
                                    body=event)

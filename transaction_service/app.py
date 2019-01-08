@@ -21,5 +21,5 @@ class Application:
 
         print(event)
 
-        self.producer.publish(json.dumps(
+        self.producer.produce(json.dumps(
             {'accountNumber': event['accountNumber'], 'balance': 10}))
