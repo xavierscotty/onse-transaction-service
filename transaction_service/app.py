@@ -1,5 +1,6 @@
 import json
 
+
 class Application:
     def __init__(self, consumer, producer, accounts):
         self.consumer = consumer
@@ -11,7 +12,8 @@ class Application:
 
     def handle_event(self, event):
         print('handling event')
-        account_exists = self.accounts.has_active_account(event['accountNumber'])
+        account_exists = self.accounts.has_active_account(
+            event['accountNumber'])
 
         if not account_exists:
             print("Invalid account")

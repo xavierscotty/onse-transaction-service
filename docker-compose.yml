@@ -1,7 +1,27 @@
 version: "3"
 services:
-   message_bus:
-     image: 'rabbitmq:3-management'
-     ports:
-      - 5672:5672
-      - 15672:15672
+    message-bus:
+      image: 'rabbitmq:3-management'
+      hostname: rabbitmq-host
+      ports:
+        - 5672:5672
+        - 15672:15672
+      networks:
+        - default
+    sink:
+      build: .
+      hostname: transactions-service
+      restart: always
+      volumes:
+        - .:/app
+      depends_on:
+        - message-bus
+      environment:
+        RABBITMQ_PORT: 5672
+        RABBITMQ_HOST: message-bus
+        ACCOUNT_SERVICE_URL: "todo"
+      networks:
+        - default
+
+networks:
+  default:

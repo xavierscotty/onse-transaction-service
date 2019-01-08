@@ -9,7 +9,7 @@ class AccountsRestClient:
         url = f'{self.url}/accounts/{account_number}'
 
         response = requests.get(url)
-        
+
         if response.status_code is not 200:
             return False
 

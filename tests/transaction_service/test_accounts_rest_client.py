@@ -2,6 +2,7 @@ from transaction_service.accounts_rest_client import AccountsRestClient
 import pytest
 import requests_mock
 
+
 @pytest.fixture(scope="function")
 def rest_client():
     rest_client = AccountsRestClient(url='http://accounts.service')
@@ -38,5 +39,3 @@ def test_has_closed_account(rest_client):
               },
               status_code=200)
         assert rest_client.has_active_account(account_number) is False
-
-

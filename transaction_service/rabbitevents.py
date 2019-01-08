@@ -1,12 +1,14 @@
 from pika import ConnectionParameters, BlockingConnection
 from transaction_service.utils import transpose_event
 
+
 class RabbitConnection:
     def __init__(self, properties):
         self.queue = properties['queue']
-
-        connection = BlockingConnection(
-            ConnectionParameters(properties['host']))
+        params = ConnectionParameters(host=properties['host'],
+                                      heartbeat_interval=600,
+                                      blocked_connection_timeout=300)
+        connection = BlockingConnection(params)
         self.channel = connection.channel()
         self.channel.queue_declare(queue=self.queue)
 
