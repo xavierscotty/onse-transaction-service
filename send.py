@@ -1,7 +1,6 @@
-from pika import ConnectionParameters, BlockingConnection
 import sys
 import os
-from transaction_service.rabbitevents import RabbitProducer
+from transaction_service.infrastructure.rabbit_events import RabbitProducer
 
 properties = {
     'exchange': 'transactions',

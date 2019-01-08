@@ -1,12 +1,11 @@
-from transaction_service.accounts_rest_client import AccountsRestClient
+from transaction_service.infrastructure.accounts_rest_client import AccountsRestClient
 import pytest
 import requests_mock
 
 
 @pytest.fixture(scope="function")
 def rest_client():
-    rest_client = AccountsRestClient(url='http://accounts.service')
-    return rest_client
+    return AccountsRestClient(url='http://accounts.service')
 
 
 def test_has_account_with_number_not_exists(rest_client):

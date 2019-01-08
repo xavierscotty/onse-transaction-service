@@ -1,7 +1,7 @@
 import os
 from transaction_service.app import Application
-from transaction_service.rabbitevents import RabbitConsumer, RabbitProducer
-from transaction_service.accounts_rest_client import AccountsRestClient
+from transaction_service.infrastructure.rabbit_events import RabbitConsumer, RabbitProducer
+from transaction_service.infrastructure.accounts_rest_client import AccountsRestClient
 
 if __name__ == "__main__":
     consumer_properties = {
