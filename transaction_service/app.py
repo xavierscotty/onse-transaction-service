@@ -22,7 +22,7 @@ class Application:
         account_exists = self.accounts.has_active_account(account_number)
 
         if not account_exists:
-            self.logger.warn(
+            self.logger.warning(
                 'Attempted transaction against inactive '
                 'account',
                 account_number=account_number,
@@ -39,4 +39,5 @@ class Application:
 
         self.logger.info('Successful transaction',
                          account_number=account_number,
-                         amount=amount)
+                         amount=amount,
+                         balance=balance)
