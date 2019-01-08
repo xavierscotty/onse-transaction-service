@@ -1,4 +1,5 @@
 from pika import ConnectionParameters, BlockingConnection
+
 from transaction_service.utils import transpose_event
 
 

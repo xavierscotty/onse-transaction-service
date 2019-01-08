@@ -14,6 +14,7 @@ autopep8 = "*"
 [packages]
 pika= "*"
 requests = "*"
+structlog = "*"
 
 [requires]
 python_version = "3.7"
