@@ -18,8 +18,8 @@ depends_on = None
 def upgrade():
     op.create_table(
         'transactions',
-        sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('account_number', sa.String()),
+        sa.Column('id', sa.String(50), primary_key=True),
+        sa.Column('account_number', sa.String(50)),
         sa.Column('amount', sa.Integer())
     )
 

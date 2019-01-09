@@ -35,6 +35,6 @@ Base = declarative_base()
 class Transaction(Base):
     __tablename__ = 'transactions'
 
-    id = Column(String(100), primary_key=True)
+    id = Column(String(50), primary_key=True)
     account_number = Column(String(50))
     amount = Column(Integer)
