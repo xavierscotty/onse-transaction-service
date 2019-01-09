@@ -13,8 +13,11 @@ autopep8 = "*"
 
 [packages]
 pika= "*"
+psycopg2 = "*"
 requests = "*"
+sqlalchemy = "*"
 structlog = "*"
+alembic = "*"
 
 [requires]
 python_version = "3.7"

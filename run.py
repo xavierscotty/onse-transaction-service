@@ -5,9 +5,10 @@ import structlog
 from transaction_service.app import Application
 from transaction_service.infrastructure.accounts_rest_client import \
     AccountsRestClient
+from transaction_service.infrastructure.postgresql_transactions import \
+    PostgreSQLTransactions
 from transaction_service.infrastructure.rabbit_events import RabbitConsumer, \
     RabbitProducer
-from transaction_service.mock.mock_transactions import MockTransactions
 
 if __name__ == "__main__":
     consumer_properties = {
@@ -27,6 +28,11 @@ if __name__ == "__main__":
                       producer=publisher,
                       accounts=accounts,
                       logger=structlog.get_logger(),
-                      transactions=MockTransactions())
+                      transactions=PostgreSQLTransactions(
+                          username=os.getenv('DB_USERNAME'),
+                          password=os.getenv('DB_PASSWORD'),
+                          host=os.getenv('DB_HOST'),
+                          port=os.getenv('DB_PORT'),
+                          db='transaction-service'))
 
     app.start()
