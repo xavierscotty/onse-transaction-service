@@ -6,7 +6,7 @@ class AccountsRestClient:
         self.url = url
 
     def has_active_account(self, account_number):
-        url = f'{self.url}/accounts/{account_number}'
+        url = f'{self.url}/accounts/accounts/{account_number}'
 
         response = requests.get(url)
 
