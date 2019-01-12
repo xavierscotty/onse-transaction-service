@@ -14,6 +14,8 @@ class Application:
         self.consumer.on_event(self.handle_event)
 
     def handle_event(self, event):
+        transactions = self.transactions
+
         self.logger.debug('Received transaction event', received_event=event)
 
         account_number = event['accountNumber']
@@ -29,13 +31,15 @@ class Application:
                 amount=amount)
             return
 
-        self.transactions.store({'accountNumber': account_number, 'amount': amount})
-        transactions = self.transactions.fetch_by_account_number(account_number)
+        transactions.store({'accountNumber': account_number,
+                            'amount': amount})
+
+        transactions = transactions.fetch_by_account_number(account_number)
 
         balance = sum([tx['amount'] for tx in transactions])
 
-        self.producer.produce(json.dumps(
-            {'accountNumber': account_number, 'balance': balance}))
+        self.producer.produce(json.dumps({'accountNumber': account_number,
+                                          'balance': balance}))
 
         self.logger.info('Successful transaction',
                          account_number=account_number,

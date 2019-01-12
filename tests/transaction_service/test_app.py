@@ -38,7 +38,8 @@ def test_the_app_checks_if_the_account_exists(app):
 def test_successful_transaction(app, logger):
     app.transactions.store({'accountNumber': '1234', 'amount': 100})
     app.consumer.produce({'accountNumber': '1234', 'amount': '99'})
-    assert app.producer.last_event == '{"accountNumber": "1234", "balance": 199}'
+    expected_event = '{"accountNumber": "1234", "balance": 199}'
+    assert app.producer.last_event == expected_event
     logger.info.assert_called_with('Successful transaction',
                                    account_number='1234',
                                    amount=99,

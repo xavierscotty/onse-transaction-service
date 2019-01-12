@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-pipenv shell;
-# docker run -d -p 5672:5672 rabbitmq
-python -m pytest;
-behave;
-# docker stop
+set -ex
+
+pipenv run flake8
+pipenv run python -m pytest;
+pipenv run behave

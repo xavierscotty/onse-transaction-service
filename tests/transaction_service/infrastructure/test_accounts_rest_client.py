@@ -1,6 +1,8 @@
-from transaction_service.infrastructure.accounts_rest_client import AccountsRestClient
 import pytest
 import requests_mock
+
+from transaction_service.infrastructure.accounts_rest_client import \
+    AccountsRestClient
 
 
 @pytest.fixture(scope="function")
