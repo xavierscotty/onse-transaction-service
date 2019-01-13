@@ -1,6 +1,6 @@
-import json
-
 from schema import Schema, And, SchemaError
+
+from transaction_service.domain.commands import CreditAccount
 
 TRANSACTION_SCHEMA = Schema(dict(
     id=And(str, len),
@@ -24,45 +24,29 @@ class Application:
         self.transaction_events.on_event(self.handle_event)
 
     def handle_event(self, event):
-        transactions = self.transaction_repository
-
         self.logger.debug('Received transaction event', received_event=event)
 
-        try:
-            TRANSACTION_SCHEMA.validate(event)
-        except SchemaError as e:
-            print('Invalid transaction event ' + str(e))
-            self.logger.warning('Invalid transaction event',
-                                error=str(e),
-                                received_event=event)
+        if not self._schema_is_valid(event):
             return
 
         account_number = event['accountNumber']
         amount = int(event['amount'])
 
-        if not self._account_exists(account_number):
-            self.logger.warning(
-                'Attempted transaction against inactive '
-                'account',
-                account_number=account_number,
-                amount=amount)
-            return
+        self._credit_account_command().execute(account_number, amount)
 
-        transactions.store({'accountNumber': account_number,
-                            'amount': amount})
+    def _credit_account_command(self):
+        return CreditAccount(
+            transaction_repository=self.transaction_repository,
+            balance_updates=self.balance_updates,
+            accounts_client=self.accounts_client,
+            logger=self.logger)
 
-        transactions = transactions.fetch_by_account_number(account_number)
-
-        balance = sum([tx['amount'] for tx in transactions])
-
-        self.balance_updates.produce(
-            json.dumps({'accountNumber': account_number,
-                        'balance': balance}))
-
-        self.logger.info('Successful transaction',
-                         account_number=account_number,
-                         amount=amount,
-                         balance=balance)
-
-    def _account_exists(self, account_number):
-        return self.accounts_client.has_active_account(account_number)
+    def _schema_is_valid(self, event):
+        try:
+            TRANSACTION_SCHEMA.validate(event)
+            return True
+        except SchemaError as e:
+            self.logger.warning('Invalid transaction event',
+                                error=str(e),
+                                received_event=event)
+            return False

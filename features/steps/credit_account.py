@@ -1,9 +1,10 @@
 import json
+from datetime import datetime
 
 from behave import given, when, then
 
 
-@given('an account {account_number} has balance {amount}')
+@given('an account {account_number} has balance {amount:d}')
 def create_account(context, account_number, amount):
     context.accounts_client.add(dict(accountNumber=account_number,
                                      accountState='active'))
@@ -14,10 +15,15 @@ def do_not_create_account(context, account_number):
     pass  # Intentional no-op
 
 
-@when('an account {account_number} is credited with {amount}')
+@when('an account {account_number} is credited with {amount:d}')
 def credit_account(context, account_number, amount):
-    context.events_in.produce(dict(accountNumber=account_number,
-                                   amount=amount))
+    context.events_in.produce(dict(
+        id='1987b482-5e66-4b7f-bd95-ac76f27ed85d',
+        accountNumber=account_number,
+        amount=amount,
+        operation='credit',
+        status='accepted',
+        created=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")))
 
 
 @then('a account {account_number} should have a balance of {balance:d}')
