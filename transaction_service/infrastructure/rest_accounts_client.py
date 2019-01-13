@@ -1,7 +1,7 @@
 import requests
 
 
-class AccountsRestClient:
+class RestAccountsClient:
     def __init__(self, url):
         self.url = url
 

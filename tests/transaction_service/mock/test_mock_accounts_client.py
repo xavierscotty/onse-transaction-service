@@ -1,10 +1,10 @@
-from transaction_service.mock.mock_accounts import MockAccounts
+from transaction_service.mock.mock_accounts_client import MockAccountsClient
 import pytest
 
 
 @pytest.fixture(scope="function")
 def accounts():
-    accounts = MockAccounts()
+    accounts = MockAccountsClient()
     return accounts
 
 

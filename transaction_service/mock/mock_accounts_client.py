@@ -1,4 +1,4 @@
-class MockAccounts:
+class MockAccountsClient:
     def __init__(self):
         self._accounts = dict()
 

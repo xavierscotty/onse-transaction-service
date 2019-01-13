@@ -1,4 +1,4 @@
-class MockTransactions:
+class MockTransactionClient:
     def __init__(self):
         self.transactions = []
 

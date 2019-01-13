@@ -1,11 +1,11 @@
 import pytest
 
-from transaction_service.mock.mock_transactions import MockTransactions
+from transaction_service.mock.mock_transactions import MockTransactionClient
 
 
 @pytest.fixture(scope='function')
 def transactions():
-    return MockTransactions()
+    return MockTransactionClient()
 
 
 def test_fetch_by_account_number_when_no_transactions(transactions):

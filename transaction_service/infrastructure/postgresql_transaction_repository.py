@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-class PostgreSQLTransactions:
+class PostgreSQLTransactionRepository:
     def __init__(self, host, port, username, password, db):
         url = f'postgresql://{username}:{password}@{host}:{port}/{db}'
         self.engine = create_engine(url)
