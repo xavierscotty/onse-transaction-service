@@ -5,10 +5,8 @@ from behave import given, when, then
 
 @given('an account {account_number} has balance {amount}')
 def create_account(context, account_number, amount):
-    context.accounts.add({
-        'accountNumber': account_number,
-        'accountState': 'active'
-    })
+    context.accounts_client.add(dict(accountNumber=account_number,
+                                     accountState='active'))
 
 
 @given('there is not account with the number {account_number}')
@@ -18,16 +16,16 @@ def do_not_create_account(context, account_number):
 
 @when('an account {account_number} is credited with {amount}')
 def credit_account(context, account_number, amount):
-    context.events_in.produce({
-        'accountNumber': account_number,
-        'amount': amount
-    })
+    context.events_in.produce(dict(accountNumber=account_number,
+                                   amount=amount))
 
 
 @then('a account {account_number} should have a balance of {balance:d}')
 def assert_account_balance(context, account_number, balance):
     published_event = json.loads(context.events_out.last_event)
-    expected_event = {'accountNumber': account_number, 'balance': balance}
+
+    expected_event = dict(accountNumber=account_number, balance=balance)
+
     assert published_event == expected_event, \
         f'{repr(published_event)} != {repr(expected_event)}'
 

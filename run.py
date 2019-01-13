@@ -10,15 +10,13 @@ from transaction_service.infrastructure.rest_accounts_client import \
     RestAccountsClient
 
 if __name__ == "__main__":
-    consumer_properties = {
-        'queue': 'transactions',
-        'host': os.getenv('RABBITMQ_HOST', 'localhost')
-    }
-    producer_properties = {
-        'exchange': 'balance_updates',
-        'queue': 'balance_updates',
-        'host': os.getenv('RABBITMQ_HOST', 'localhost')
-    }
+    consumer_properties = dict(queue='transactions',
+                               host=os.getenv('RABBITMQ_HOST', 'localhost'))
+
+    producer_properties = dict(exchange='balance_updates',
+                               queue='balance_updates',
+                               host=os.getenv('RABBITMQ_HOST', 'localhost'))
+
     consumer = RabbitConsumer(consumer_properties)
     publisher = RabbitProducer(producer_properties)
     accounts = RestAccountsClient(os.getenv('ACCOUNT_SERVICE_URL'))
