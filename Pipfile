@@ -19,6 +19,7 @@ requests = "*"
 sqlalchemy = "*"
 structlog = "*"
 alembic = "*"
+schema = "*"
 
 [requires]
 python_version = "3.7"

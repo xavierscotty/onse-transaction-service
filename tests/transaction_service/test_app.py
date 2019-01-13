@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+from unittest import mock
 from unittest.mock import Mock
 
 import pytest
@@ -24,33 +27,89 @@ def logger():
 
 
 def test_a_message_is_logged_on_event(app, logger):
-    event = {'accountNumber': '1234', 'amount': '99'}
+    event = dict(accountNumber='1234', amount='99')
     app.transaction_events.produce(event)
     logger.debug.assert_called_with('Received transaction event',
                                     received_event=event)
 
 
+GOOD_PAYLOAD = dict(id='1987b482-5e66-4b7f-bd95-ac76f27ed85d',
+                    accountNumber='12345678',
+                    amount=99,
+                    operation='credit',
+                    status='accepted',
+                    created=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
+
+
+@pytest.mark.parametrize(
+    'payload',
+    [dict(),
+     {**GOOD_PAYLOAD, 'extra': '?'},
+     {**GOOD_PAYLOAD, 'id': ''},
+     {**GOOD_PAYLOAD, 'accountNumber': '1234567'},
+     {**GOOD_PAYLOAD, 'accountNumber': '123456789'},
+     {**GOOD_PAYLOAD, 'amount': '10'},
+     {**GOOD_PAYLOAD, 'amount': 0},
+     {**GOOD_PAYLOAD, 'operation': 'bad'},
+     {**GOOD_PAYLOAD, 'status': 'unknown'},
+     {**GOOD_PAYLOAD, 'created': ''}])
+def test_invalid_payloads_log_and_abort(payload, app, logger):
+    app.transaction_events.produce(payload)
+
+    assert app.balance_updates.last_event is None
+    logger.warning.assert_called_with('Invalid transaction event',
+                                      error=mock.ANY,
+                                      received_event=payload)
+
+
 def test_the_app_checks_if_the_account_exists(app):
-    app.transaction_events.produce({'accountNumber': '1234', 'amount': '99'})
+    app.transaction_events.produce(dict(
+        id='1987b482-5e66-4b7f-bd95-ac76f27ed85d',
+        accountNumber='12345678',
+        amount=99,
+        operation='credit',
+        status='accepted',
+        created=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")))
+
     app.accounts_client.has_active_account.assert_called()
 
 
 def test_successful_transaction(app, logger):
-    app.transaction_repository.store({'accountNumber': '1234', 'amount': 100})
-    app.transaction_events.produce({'accountNumber': '1234', 'amount': '99'})
-    expected_event = '{"accountNumber": "1234", "balance": 199}'
-    assert app.balance_updates.last_event == expected_event
+    account_number = '12345678'
+    app.transaction_repository.store(dict(accountNumber=account_number,
+                                          amount=100))
+
+    app.transaction_events.produce(dict(
+        id='1987b482-5e66-4b7f-bd95-ac76f27ed85d',
+        accountNumber=account_number,
+        amount=99,
+        operation='credit',
+        status='accepted',
+        created=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")))
+
+    expected_event = dict(accountNumber="12345678", balance=199)
+    assert json.loads(app.balance_updates.last_event) == expected_event
     logger.info.assert_called_with('Successful transaction',
-                                   account_number='1234',
+                                   account_number=account_number,
                                    amount=99,
                                    balance=199)
 
 
 def test_transaction_when_account_is_not_active(app, logger):
     app.accounts_client.has_active_account.return_value = False
-    app.transaction_events.produce({'accountNumber': '1234', 'amount': '99'})
+
+    account_number = '12345678'
+    app.transaction_events.produce(
+        dict(
+            id='1987b482-5e66-4b7f-bd95-ac76f27ed85d',
+            accountNumber=account_number,
+            amount=99,
+            operation='credit',
+            status='accepted',
+            created=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")))
+
     assert app.balance_updates.last_event is None
     logger.warning.assert_called_with('Attempted transaction against inactive '
                                       'account',
-                                      account_number='1234',
+                                      account_number=account_number,
                                       amount=99)

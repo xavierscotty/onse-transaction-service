@@ -1,5 +1,15 @@
 import json
 
+from schema import Schema, And, SchemaError
+
+TRANSACTION_SCHEMA = Schema(dict(
+    id=And(str, len),
+    accountNumber=And(str, lambda s: len(s) == 8),
+    amount=And(int, lambda n: n > 0),
+    operation=And(str, lambda s: s in ['credit', 'debit']),
+    status='accepted',
+    created=And(str, len)))
+
 
 class Application:
     def __init__(self, transaction_events, balance_updates, accounts_client,
@@ -17,6 +27,15 @@ class Application:
         transactions = self.transaction_repository
 
         self.logger.debug('Received transaction event', received_event=event)
+
+        try:
+            TRANSACTION_SCHEMA.validate(event)
+        except SchemaError as e:
+            print('Invalid transaction event ' + str(e))
+            self.logger.warning('Invalid transaction event',
+                                error=str(e),
+                                received_event=event)
+            return
 
         account_number = event['accountNumber']
         amount = int(event['amount'])
