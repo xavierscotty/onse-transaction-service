@@ -1,11 +1,13 @@
 import pytest
 
-from transaction_service.mock.mock_transactions import MockTransactionClient
+from transaction_service.domain.account import Transaction
+from transaction_service.mock.mock_transaction_repository import \
+    MockTransactionRepository
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def transactions():
-    return MockTransactionClient()
+    return MockTransactionRepository()
 
 
 def test_fetch_by_account_number_when_no_transactions(transactions):
@@ -15,11 +17,11 @@ def test_fetch_by_account_number_when_no_transactions(transactions):
 def test_fetch_by_account_number_returns_the_transactions(transactions):
     account_a = '1234'
     account_b = '4567'
-    transactions.store({'accountNumber': account_a, 'amount': 10})
-    transactions.store({'accountNumber': account_b, 'amount': 20})
-    transactions.store({'accountNumber': account_a, 'amount': 30})
+    tx1 = Transaction(account_number=account_a, amount=10)
+    tx2 = Transaction(account_number=account_b, amount=20)
+    tx3 = Transaction(account_number=account_a, amount=30)
+    transactions.store(tx1)
+    transactions.store(tx2)
+    transactions.store(tx3)
 
-    assert transactions.fetch_by_account_number(account_a) == [
-        {'accountNumber': account_a, 'amount': 10},
-        {'accountNumber': account_a, 'amount': 30}
-    ]
+    assert transactions.fetch_by_account_number(account_a) == [tx1, tx3]
