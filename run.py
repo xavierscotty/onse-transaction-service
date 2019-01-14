@@ -10,11 +10,11 @@ from transaction_service.infrastructure.rest_accounts_client import \
     RestAccountsClient
 
 if __name__ == "__main__":
-    consumer_properties = dict(queue='transactions',
+    consumer_properties = dict(exchange='transactions',
+                               queue='transactions',
                                host=os.getenv('RABBITMQ_HOST', 'localhost'))
 
     producer_properties = dict(exchange='balance_updates',
-                               queue='balance_updates',
                                host=os.getenv('RABBITMQ_HOST', 'localhost'))
 
     consumer = RabbitConsumer(consumer_properties)
