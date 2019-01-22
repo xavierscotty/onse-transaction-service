@@ -14,13 +14,12 @@ flake8 = "*"
 
 [packages]
 pika= "*"
-psycopg2 = "*"
 requests = "*"
 sqlalchemy = "*"
 structlog = "*"
 alembic = "*"
 schema = "*"
-psutil = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"
