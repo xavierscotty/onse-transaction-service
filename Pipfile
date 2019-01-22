@@ -7,7 +7,6 @@ verify_ssl = true
 pytest = "*"
 pylint = "*"
 behave = "*"
-pytest-rabbitmq = "*"
 requests-mock = "*"
 autopep8 = "*"
 flake8 = "*"
